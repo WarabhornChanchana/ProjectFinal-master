@@ -1,0 +1,31 @@
+{% extends "app_general/base.html" %}
+
+{% block title %}
+ตะกร้าสินค้าของคุณ
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>ตะกร้าสินค้าของคุณ</h2>
+    {% if cart_items %}
+    <ul>
+        {% for cart_item in cart_items %}
+        <li>
+          <form action="{% url 'remove_single_from_cart' cart_item.product.id %}" method="post">
+                {% csrf_token %}
+                {% if cart_item.product.product_cover %}
+                <img src="{{ cart_item.product.product_cover.url }}" class="img-fluid" style="width: 100px; height: auto;" alt="{{ cart_item.product.name }}">
+                {% endif %}
+                สินค้า: {{ cart_item.product.name }}, จำนวน: {{ cart_item.quantity }}, ราคารวม: {{ cart_item.total_price }}
+                <input type="number" name="quantity" value="1" min="1" max="{{ cart_item.quantity }}" style="width: 50px;">
+                <button type="submit" class="btn btn-danger btn-sm">ลบจำนวนนี้</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>ตะกร้าสินค้าของคุณว่างเปล่า</p>
+    {% endif %}
+    <a href="{% url 'products' %}" class="btn btn-primary">ย้อนกลับไปหน้ารายการสินค้า</a>
+</div>
+{% endblock %}
